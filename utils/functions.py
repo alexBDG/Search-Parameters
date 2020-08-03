@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 j = complex(0, 1)
 
-def alpha_JCAPL(w, materiau, debug=False):
+def alpha_JCAPL(w, mat, debug=False):
     """
     Calcule la tortuosité dynamique selon le modèle JCAPL (Johnson-Champoux-Allard-Pride-Lafarge)
     Sources : https://apmr.matelys.com/PropagationModels/MotionlessSkeleton/JohnsonChampouxAllardPrideLafargeModel.html
@@ -38,13 +38,13 @@ def alpha_JCAPL(w, materiau, debug=False):
     """
     
     # constantes
-    M = 8*materiau.k_0*materiau.alpha_inf/(materiau.phi*materiau.Delta**2)
-    P = M/(4*(materiau.alpha_0/materiau.alpha_inf-1))
-    b = materiau.rho_0*materiau.k_0*materiau.alpha_inf/(materiau.eta*materiau.phi)
+    M = 8*mat.k_0*mat.alpha_inf/(mat.phi*mat.Delta**2)
+    P = M/(4*(mat.alpha_0/mat.alpha_inf-1))
+    b = mat.rho_0*mat.k_0*mat.alpha_inf/(mat.eta*mat.phi)
     L = 2*P**2/(M*b)
     
     # valeur d'alpha
-    alpha = materiau.alpha_inf*(1+1/(j*w*b)*(1-P+P*(1+1/L*j*w)**0.5))
+    alpha = mat.alpha_inf*(1+1/(j*w*b)*(1-P+P*(1+1/L*j*w)**0.5))
     
     # debug
     if debug:
@@ -76,22 +76,21 @@ def correlation(df, pred_df, split=False):
 
     """
     
+    r2coef_r = r2_score(df.alpha_r.values,
+                        pred_df.alpha_r.values)
+    r2coef_i = r2_score(df.alpha_i.values,
+                        pred_df.alpha_i.values)
+    
     if split:
-        r2coef_r = r2_score(df.alpha_r.values,
-                            pred_df.alpha_r.values)
-        r2coef_i = r2_score(df.alpha_i.values,
-                            pred_df.alpha_i.values)
         return r2coef_r, r2coef_i
 
     else:
-        r2coef = r2_score(df.alpha_r.values      + df.alpha_i.values,
-                          pred_df.alpha_r.values + pred_df.alpha_i.values)
-        return r2coef
+        return (r2coef_r + r2coef_i)/2.
 
 
 
 
-def mse(df, pred_df):
+def mse(df, pred_df, split=False):
     """
     Calcule l'erreur quadratique moyenne (MSE) pour l'ensemble [[Re(z) for z in df] [Im(z) for z in df]]
 
@@ -108,10 +107,17 @@ def mse(df, pred_df):
         L'erreur quadratique moyenne calculée.
 
     """
-    r2coef = mean_squared_error(df.alpha_r.values      + df.alpha_i.values,
-                                pred_df.alpha_r.values + pred_df.alpha_i.values)
     
-    return r2coef
+    mse_coef_r = mean_squared_error(df.alpha_r.values,
+                                  pred_df.alpha_r.values)
+    mse_coef_i = mean_squared_error(df.alpha_i.values,
+                                  pred_df.alpha_i.values)
+    
+    if split:
+        return mse_coef_r, mse_coef_i
+
+    else:
+        return (mse_coef_r + mse_coef_i)/2.
 
 
 
@@ -125,8 +131,8 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.xscale('log')
     plt.ylabel("Re")
     plt.grid(True, linestyle='--')
-    plt.scatter(df["w"], df["alpha_r"])
-    plt.scatter(pred_df["w"], pred_df["alpha_r"], label="pred")
+    plt.scatter(df["w"],      df["alpha_r"],      s=50, label="JCAPL")
+    plt.scatter(pred_df["w"], pred_df["alpha_r"], s=25, label="pred")
     plt.title("$R^2$=%.2f, MSE=%.2f" % (r2_score(df["alpha_r"], pred_df["alpha_r"]), 
                                         mean_squared_error(df["alpha_r"], pred_df["alpha_r"])))
     plt.legend()
@@ -136,8 +142,8 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.xscale('log')
     plt.ylabel("Im")
     plt.grid(True, linestyle='--')
-    plt.scatter(df["w"], df["alpha_i"])
-    plt.scatter(pred_df["w"], pred_df["alpha_i"], label="pred")
+    plt.scatter(df["w"],      df["alpha_i"],      s=50, label="JCAPL")
+    plt.scatter(pred_df["w"], pred_df["alpha_i"], s=25, label="pred")
     plt.title("$R^2$=%.2f, MSE=%.2f" % (r2_score(df["alpha_i"], pred_df["alpha_i"]), 
                                         mean_squared_error(df["alpha_i"], pred_df["alpha_i"])))
     plt.legend()
@@ -159,10 +165,11 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.ylabel("Im")
     plt.grid(True, linestyle='--')
     plt.scatter(df["w"].values + df["w"].values[-1]*pred_df["w"].values, 
-                df["alpha_r"].values + df["alpha_i"].values)
+                df["alpha_r"].values + df["alpha_i"].values,
+                s=50, label="JCAPL")
     plt.scatter(df["w"].values + df["w"].values[-1]*pred_df["w"].values, 
                 pred_df["alpha_r"].values + pred_df["alpha_i"].values, 
-                label="pred")
+                s=25, label="pred")
     plt.title("$R^2$=%.2f, MSE=%.2f" % (r2_score(df["alpha_r"].values      + df["alpha_i"].values, 
                                                  pred_df["alpha_r"].values + pred_df["alpha_i"].values), 
                                         mean_squared_error(df["alpha_r"].values      + df["alpha_i"].values,
@@ -182,8 +189,8 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.xlabel("Re")
     plt.ylabel("Im")
     plt.grid(True, linestyle='--')
-    plt.scatter(df["alpha_r"], df["alpha_i"])
-    plt.scatter(pred_df["alpha_r"], pred_df["alpha_i"], label="pred")
+    plt.scatter(df["alpha_r"],      df["alpha_i"],      s=50, label="JCAPL")
+    plt.scatter(pred_df["alpha_r"], pred_df["alpha_i"], s=25, label="pred")
     plt.title("$R^2$=%.2f, MSE=%.2f" % (r2_score(df["alpha_r"].values      + df["alpha_i"].values, 
                                                  pred_df["alpha_r"].values + pred_df["alpha_i"].values), 
                                         mean_squared_error(df["alpha_r"].values      + df["alpha_i"].values,
@@ -206,8 +213,8 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.figure(figsize=(8, 8))
         
     plt.subplot(2, 1, 1)
-    plt.semilogx(df["w"], [r for (r, phi) in y_true])
-    plt.semilogx(pred_df["w"], [r for (r, phi) in y_pred], label="pred")
+    plt.semilogx(df["w"],      [r for (r, phi) in y_true], linewidth=4, label="JCAPL")
+    plt.semilogx(pred_df["w"], [r for (r, phi) in y_pred], linewidth=2, label="pred")
     plt.legend()
     plt.grid(True,linestyle='--')
     plt.xlabel("$\omega$")
@@ -215,8 +222,8 @@ def plot(df, pred_df, mode="humain", path_name=None):
     plt.title("Magnetude")
     
     plt.subplot(2, 1, 2)
-    plt.semilogx(df["w"], [phi*180/np.pi for (r, phi) in y_true])
-    plt.semilogx(pred_df["w"], [phi*180/np.pi for (r, phi) in y_pred], label="pred")
+    plt.semilogx(df["w"],      [phi*180/np.pi for (r, phi) in y_true], linewidth=4, label="JCAPL")
+    plt.semilogx(pred_df["w"], [phi*180/np.pi for (r, phi) in y_pred], linewidth=2, label="pred")
     plt.legend()
     plt.grid(True,linestyle='--')
     plt.xlabel("$\omega$")
@@ -240,6 +247,11 @@ def analyse(path_name=None):
     else:
         directory = min(glob.glob(os.path.join("results", '*/')), key=os.path.getmtime)
         directory = os.path.join(directory, "params.csv")
+        
+    if Config.REWARD_TYPE=="re_coef":
+        label="R² coef"
+    elif Config.REWARD_TYPE=="mse":
+        label="MSE"
     
     # coefficient R² et reward selon les étapes d'entraînement
     df = pd.read_csv(directory)
@@ -250,7 +262,7 @@ def analyse(path_name=None):
     
     plt.xlabel("step")
     plt.grid(True, linestyle='--')
-    plt.scatter(df["current_step"], df["r2_coef"], label="R² coef")
+    plt.scatter(df["current_step"], df["r2_coef"], label=label)
     plt.scatter(df["current_step"], df["reward"], label="reward")
     plt.legend()
     
@@ -260,7 +272,7 @@ def analyse(path_name=None):
     plt.xlabel("Re")
     plt.ylabel("Im")
     plt.grid(True, linestyle='--')
-    plt.scatter(df["Re(a)"], df["Im(a)"])
+    plt.scatter(df["Re(mu[0])"], df["Im(mu[0])"])
     
     plt.subplot(1, 2, 2)
     plt.xlabel("Re")

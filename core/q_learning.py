@@ -3,10 +3,12 @@ import numpy as np
 import sys
 from collections import deque
 
-from utils.general import get_logger, Progbar, export_plot
+from utils.general       import get_logger, Progbar, export_plot
 from utils.replay_buffer import ReplayBuffer
 
-from env.TortuositeEnv import TortuositeEnv
+from env.AlphaEnv        import AlphaEnv
+from configs.environment import IlyMou, Config
+
 import pandas as pd
 
 
@@ -268,6 +270,9 @@ class QN(object):
         # log our activity only if default call
         if num_episodes is None:
             self.logger.info("Evaluating...")
+            prog_bar = True
+        else:
+            prog_bar = False
 
         # arguments defaults
         if num_episodes is None:
@@ -279,6 +284,9 @@ class QN(object):
         # replay memory to play
         replay_buffer = ReplayBuffer(self.config.buffer_size, self.config.state_history)
         rewards = []
+        
+        if prog_bar:
+            prog = Progbar(target=num_episodes)
 
         for i in range(num_episodes):
             total_reward = 0
@@ -306,6 +314,9 @@ class QN(object):
 
             # updates to perform at the end of an episode
             rewards.append(total_reward)
+            
+            if prog_bar:
+                prog.update(i + 1, exact=[("Reward", total_reward)])
 
         avg_reward = np.mean(rewards)
         sigma_reward = np.sqrt(np.var(rewards) / len(rewards))
@@ -322,8 +333,19 @@ class QN(object):
         Re create an env and record a video for one episode
         """
         
+        # load data
         df = pd.read_csv('data/tortuosite.csv')
-        env = TortuositeEnv(df)
+        
+        # load material
+        mat = IlyMou()
+        
+        if Config.CASE_STUDY=="alpha":
+            env = AlphaEnv(df, mat, summary=True)
+        elif Config.CASE_STUDY=="f(w)":
+            raise NotImplementedError
+        else:
+            raise NotImplementedError
+            
         self.evaluate(env, 1)
         env.render()
 

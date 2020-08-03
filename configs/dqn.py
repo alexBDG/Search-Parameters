@@ -14,20 +14,20 @@ class config():
     record_path  = output_path + "monitor/"
 
     # model and training config
-    num_episodes_test = 50
+    num_episodes_test = 5       # 50
     grad_clip         = True
     clip_val          = 10
-    saving_freq       = 250000 #250000
+    saving_freq       = 250000  #250000
     log_freq          = 50
-    eval_freq         = 250000 #250000
-    record_freq       = 250000 #250000
+    eval_freq         = 250000  #250000
+    record_freq       = 250000  #250000
     soft_epsilon      = 0.05
 
     # nature paper hyper params
     nsteps_train       = 5000000 #5000000
     batch_size         = 32
     buffer_size        = 1000000 #1000000
-    target_update_freq = 10000   #10000
+    target_update_freq = 1000   #10000
     gamma              = 0.99
     learning_freq      = 4
     state_history      = 4
@@ -38,4 +38,4 @@ class config():
     eps_begin          = 1
     eps_end            = 0.1
     eps_nsteps         = 1000000 #1000000
-    learning_start     = 50000   #50000
+    learning_start     = 500000   #50000
