@@ -122,7 +122,7 @@ class AlphaEnv(TortuositeEnv):
         mse_r, mse_i         = mse(self.sub_df, pred_df, split=True)
         
         print()
-        print("###########################################")
+        print("#"*80)
         print("Étape : {0}".format(self.current_step))
         print("R² coef :     {0:+.6f}".format((r2_coef_r + r2_coef_i)/2.))
         print("  ~ initial : {0:+.6f}".format(self.r2_coef_0))
@@ -138,16 +138,16 @@ class AlphaEnv(TortuositeEnv):
         print("   MSE ~ partie réelle :     {0:+.6f}".format(mse_r))
         print("   MSE ~ partie imaginaire : {0:+.6f}".format(mse_i))
         
-        print("-------------------------------------------")
+        print("-"*80)
         print("Les paramètres trouvés :")
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   mu[{0:1d}] = {1:+.6e}".format(k+1, self.mu_k[k]))
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   xi[{0:1d}] = {1:+.6e}".format(k+1, abs(self.xi_k[k])))
     
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         print("Pour la fonction :")
         print()
         
@@ -168,17 +168,17 @@ class AlphaEnv(TortuositeEnv):
         print()
         
         if self.summary is not None:
-            print("-------------------------------------------")
+            print("-"*80)
             self._save_params()
         
-            print("-------------------------------------------")
+            print("-"*80)
             plot(self.df, self.vfa.compute(), mode=mode, path_name=self.summary.path_name)
             
             if mode=="humain":
-                print("-------------------------------------------")
+                print("-"*80)
             self.summary.plot(mode=mode)
             
-        print("###########################################")
+        print("#"*80)
         print()
     
     

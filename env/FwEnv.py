@@ -242,7 +242,7 @@ class AlphaEnv(TortuositeEnv):
         mse_r, mse_i         = mse(self.sub_df, pred_df, split=True)
         
         print()
-        print("###########################################")
+        print("#"*80)
         print("Étape : {0}".format(self.current_step))
         print("R² coef :     {0:+.6f}".format((r2_coef_r + r2_coef_i)/2.))
         print("  ~ initial : {0:+.6f}".format(self.r2_coef_0))
@@ -258,9 +258,9 @@ class AlphaEnv(TortuositeEnv):
         print("   MSE ~ partie réelle :     {0:+.6f}".format(mse_r))
         print("   MSE ~ partie imaginaire : {0:+.6f}".format(mse_i))
         
-        print("-------------------------------------------")
+        print("-"*80)
         print("Les paramètres trouvés :")
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         print("   a     = {0:+.6e} + {1:+.6e}j".format(self.a.real, self.a.imag))
         print("   b     = {0:+.6e} + {1:+.6e}j".format(self.b.real, self.b.imag))
         print("   c     = {0:+.6e} + {1:+.6e}j".format(self.c.real, self.c.imag))
@@ -268,20 +268,20 @@ class AlphaEnv(TortuositeEnv):
         print("   e     = {0:+.6e} + {1:+.6e}j".format(self.d.real, self.d.imag))
         print("   f     = {0:+.6e} + {1:+.6e}j".format(self.d.real, self.d.imag))
         print("   g     = {0:+.6e} + {1:+.6e}j".format(self.d.real, self.d.imag))
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   r[{0:1d}]  = {1:+.6e} + {2:+.6e}j".format(k+1, self.r_k[k].real, self.r_k[k].imag))
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   s[{0:1d}]  = {1:+.6e} + {2:+.6}j".format(k+1, self.s_k[k].real, self.s_k[k].imag))
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   mu[{0:1d}] = {1:+.6e} + {2:+.6e}j".format(k+1, self.mu_k[k].real, self.mu_k[k].imag))
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         for k in range(Config.N_MODES):
             print("   xi[{0:1d}] = {1:+.6e} + {2:+.6e}j".format(k+1, self.xi_k[k].real, self.xi_k[k].imag))
     
-        print("~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~")
+        print("~ "*40)
         print("Pour la fonction :")
         print()
         
@@ -311,17 +311,17 @@ class AlphaEnv(TortuositeEnv):
         print()
         
         if self.summary is not None:
-            print("-------------------------------------------")
+            print("-"*80)
             self._save_params()
         
-            print("-------------------------------------------")
+            print("-"*80)
             plot(self.df, self.vfa.compute(), mode=mode, path_name=self.summary.path_name)
             
             if mode=="humain":
-                print("-------------------------------------------")
+                print("-"*80)
             self.summary.plot(mode=mode)
             
-        print("###########################################")
+        print("#"*80)
         print()
     
     
