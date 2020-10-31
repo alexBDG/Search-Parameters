@@ -24,7 +24,7 @@ class VFA_Ilyes:
         self.n            = n_modes
         self.w_values     = w_values # 100000 valeurs
         self.mat          = mat
-        self.sub_w_values = np.array([w for i, w in enumerate(self.w_values) if i%100==0]) # 1000 valeurs
+        self.sub_w_values = np.array([w for i, w in enumerate(self.w_values) if i%1000==0]) # 1000 valeurs
         self.b_           = mat.rho_0*mat.k_0*mat.alpha_inf/(mat.eta*mat.phi)
         self.alpha_inf    = mat.alpha_inf
         self.alpha_r      = alpha_r
@@ -80,8 +80,8 @@ class VFA_Ilyes:
         else:
             w_list = self.sub_w_values
         
-        f_values = np.empty(shape=w_list.shape)
-        for k in range(w_list):
+        f_values = np.empty(shape=w_list.shape, dtype=complex)
+        for k in range(w_list.shape[0]):
             f_values[k] = self.evaluate(w_list[k])
         
         df = pd.DataFrame({"w": w_list,

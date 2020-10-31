@@ -9,3 +9,6 @@ test/
 
 # Sphinx documentation
 docs/_build/
+
+# Result when saving cProfile info
+profile.txt

@@ -27,7 +27,7 @@ class config():
     nsteps_train       = 1000000 #5000000
     batch_size         = 32
     buffer_size        = 1000000 #1000000
-    target_update_freq = 1000   #10000
+    target_update_freq = 10   #10000
     gamma              = 0.99
     learning_freq      = 4
     state_history      = 4
@@ -38,4 +38,4 @@ class config():
     eps_begin          = 1
     eps_end            = 0.1
     eps_nsteps         = 10000 #1000000
-    learning_start     = 50000   #50000
+    learning_start     = 5000   #50000
