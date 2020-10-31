@@ -3,8 +3,8 @@ class config():
     render_train     = False
     render_test      = False
     overwrite_render = True
-    record           = False
-    high             = 255.
+    record           = True
+    high             = 1000000. #☺255.
 
     # output config
     output_path  = "results/q2_linear/"
@@ -22,7 +22,7 @@ class config():
     soft_epsilon      = 0
 
     # hyper params
-    nsteps_train       = 10000
+    nsteps_train       = 10000 #10000
     batch_size         = 32
     buffer_size        = 1000
     target_update_freq = 500

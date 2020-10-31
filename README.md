@@ -6,18 +6,6 @@ Travail sur la recherche optimale de paramêtres d'inconnus.
 
 
 
-## Explications
-
-Pour accéder au nombre de mode : `configs.environment.Config.N_MODES`
-
-Pour accéder au nombre d'actions possibles pour que le modèle trouve les 
-paramètres inconnus : `configs.environment.Config.MAX_STEPS`
-
-Pour accéder au nombre d'itérations lors de l'entraînement du modèle : 
-`configs.dqn.config.nsteps_train`
-
-
-
 
 ## Installation
 
@@ -43,3 +31,33 @@ Son utilisation est la suivante :
 ```shell
 pip install -r requirements.txt
 ```
+
+
+
+
+## Explications
+
+Pour accéder au nombre de mode : `configs.environment.Config.N_MODES`
+
+Pour accéder au nombre d'actions possibles pour que le modèle trouve les 
+paramètres inconnus : `configs.environment.Config.MAX_STEPS`
+
+Pour accéder au nombre d'itérations lors de l'entraînement du modèle : 
+`configs.dqn.config.nsteps_train`
+
+
+
+
+
+## Suivis
+
+Pour visualiser l'avancement du calcul en temps réel, il suffit de lancer 
+`tensorboard`.
+
+Il faut executer :
+```shell
+tensorboard --logdir results
+```
+
+Puis aller sur ![http://localhost:6006/](http://localhost:6006/) (le port 6006
+étant celui utilisé par `tensorboard`).

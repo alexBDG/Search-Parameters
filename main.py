@@ -14,6 +14,7 @@ from core.q_schedule import LinearExploration, LinearSchedule
 from core.q_linear   import Linear
 
 from configs.dqn         import config
+#from configs.linear      import config
 from configs.environment import IlyMou, Config
 
 

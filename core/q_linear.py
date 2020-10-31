@@ -70,10 +70,20 @@ class Linear(DQN):
 #        num_actions = 8*2*Config.N_PARAMS
         
         with tf.variable_scope(scope, reuse=reuse):
-            out = tf.layers.flatten(state)
-            out = tf.layers.dense(out, Config.DIM_DENSE_1, activation="relu")
-            out = tf.layers.dense(out, Config.DIM_DENSE_2, activation="relu")
-            out = tf.layers.dense(out, num_actions,        activation="softmax")
+            out = tf.layers.flatten(state,
+                                    name='flatten')
+            out = tf.layers.dense(out, 
+                                  Config.DIM_DENSE_1, 
+                                  activation="relu",
+                                  name='fc1')
+            out = tf.layers.dense(out, 
+                                  Config.DIM_DENSE_2, 
+                                  activation="relu",
+                                  name='fc2')
+            out = tf.layers.dense(out, 
+                                  num_actions,        
+                                  activation="softmax",
+                                  name='fc3')
 
         return out
 

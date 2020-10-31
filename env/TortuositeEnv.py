@@ -40,7 +40,8 @@ class TortuositeEnv(object):
         self.df     = df
         self.mat    = mat
         self.sub_df = df.drop(df[df.index%100!=0].index)
-        self.vfa    = VFA_Ilyes(Config.N_MODES, self.df["w"].values, self.mat)
+        self.vfa    = VFA_Ilyes(Config.N_MODES, self.df["w"].values, self.mat,
+                                df.alpha_r.values, df.alpha_i.values)
         
         # On crée le suivi de certaines valeurs
         if summary:

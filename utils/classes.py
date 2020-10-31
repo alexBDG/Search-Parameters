@@ -9,6 +9,7 @@ Created on Sun Jul  5 17:50:42 2020
 import os
 import datetime
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 from configs.environment import Config
@@ -19,13 +20,15 @@ j = complex(0, 1)
 
 class VFA_Ilyes:
         
-    def __init__(self, n_modes, w_values, mat):
+    def __init__(self, n_modes, w_values, mat, alpha_r, alpha_i):
         self.n            = n_modes
         self.w_values     = w_values # 100000 valeurs
         self.mat          = mat
-        self.sub_w_values = [w for i, w in enumerate(self.w_values) if i%100==0] # 1000 valeurs
+        self.sub_w_values = np.array([w for i, w in enumerate(self.w_values) if i%100==0]) # 1000 valeurs
         self.b_           = mat.rho_0*mat.k_0*mat.alpha_inf/(mat.eta*mat.phi)
         self.alpha_inf    = mat.alpha_inf
+        self.alpha_r      = alpha_r
+        self.alpha_i      = alpha_i
         
     
     def update(self, a=None, b=None, c=None, d=None, e=None, f=None, g=None, r_k=None, s_k=None, mu_k=None, xi_k=None):
@@ -57,19 +60,14 @@ class VFA_Ilyes:
         # s = jw avec w € R*+
         
         if Config.CASE_STUDY == "alpha":
-            sum2 = 0
-            for k in range(self.n):
-                # Les xi doivent être positifs, donc on prend la valeur absolue
-                sum2 += self.mu_k[k] / (j*w + abs(self.xi_k[k]))
-            f = self.alpha_inf + self.alpha_inf/(self.b_*j*w) + sum2
+            f = self.alpha_inf + self.alpha_inf/(self.b_*j*w) + \
+                np.sum(self.mu_k / (j*w + np.abs(self.xi_k)))
             return f
         
         elif Config.CASE_STUDY == "f(w)":
-            sum1, sum2 = 0, 0
-            for k in range(self.n):
-                sum1 += self.r_k[k]  / (j*w - self.s_k[k])
-                sum2 += self.mu_k[k] / (j*w - self.xi_k[k])
-            f = self.a*j*w + self.b + self.c/(j*w) + (self.d*j*w + self.e)*sum1 + (self.f*j*w + self.g)*sum2
+            f = self.a*j*w + self.b + self.c/(j*w) + \
+                (self.d*j*w + self.e)*np.sum(self.r_k  / (j*w - self.s_k)) + \
+                (self.f*j*w + self.g)*np.sum(self.mu_k  / (j*w - self.xi_k))
             return f
     
             
@@ -82,14 +80,14 @@ class VFA_Ilyes:
         else:
             w_list = self.sub_w_values
         
-        f_values = []
-        for w in w_list:
-            f_values += [self.evaluate(w)]
+        f_values = np.empty(shape=w_list.shape)
+        for k in range(w_list):
+            f_values[k] = self.evaluate(w_list[k])
         
         df = pd.DataFrame({"w": w_list,
                            "alpha": f_values,
-                           "alpha_r": list(z.real for z in f_values),
-                           "alpha_i": list(z.imag for z in f_values)})
+                           "alpha_r": np.real(f_values),
+                           "alpha_i": np.imag(f_values)})
         return df
     
             
@@ -99,6 +97,8 @@ class VFA_Ilyes:
             os.mkdir('results')
             
         df = self.compute()
+        df['true_r'] = self.alpha_r
+        df['true_i'] = self.alpha_i
         df.to_csv("results/{0}/tortuosite.csv".format(path_name), index=False)
 
 
