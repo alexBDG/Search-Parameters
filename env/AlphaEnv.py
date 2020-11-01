@@ -103,8 +103,12 @@ class AlphaEnv(TortuositeEnv):
         # Enregistre les paramètres déterminés sous format JSON
             
         data = {
-                "mu_k": {"mu_{0}".format(i): {"Re": mu.real, "Im": mu.imag} for i, mu in enumerate(self.mu_k)},
-                "xi_k": {"xi_{0}".format(i): {"Re": xi.real, "Im": xi.imag} for i, xi in enumerate(self.xi_k)}
+                "mu_k": {"mu_{0}".format(i+1): {"Re": mu.real, 
+                                                "Im": mu.imag}
+                         for i, mu in enumerate(self.mu_k)},
+                "xi_k": {"xi_{0}".format(i+1): {"Re": xi.real,
+                                                "Im": xi.imag}
+                         for i, xi in enumerate(self.xi_k)}
                }
         
         with open('results/{0}/params.json'.format(self.summary.path_name), 'w') as outfile:

@@ -6,7 +6,7 @@ from utils.test_env import EnvTest
 from core.deep_q_learning import DQN
 from core.q_schedule      import LinearExploration, LinearSchedule
 
-from configs.linear      import config
+from configs.dqn      import config
 from configs.environment import Config
 
 

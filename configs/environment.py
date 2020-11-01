@@ -27,14 +27,14 @@ class Config:
     IS_TENSORBOARD = True
     TRAIN          = True
     
-    TRAIN_TIME_STEPS = 2000
-    TEST_TIME_STEPS  = 100
-    MAX_STEPS        = 10000
+    TRAIN_TIME_STEPS = 2000 # Inutile
+    TEST_TIME_STEPS  = 100 # Inutile
+    MAX_STEPS        = 1000
     MAX_INITIALIZE   = 1000000
     
     # Critères d'arrêt
-    MAX_R2  = 1.
-    MIN_MSE = 0.
+    MAX_R2  = 0.95
+    MIN_MSE = 0.5
     
     N_MODES     = 6 # k € [1, N_MODES]
     if CASE_STUDY == "alpha":

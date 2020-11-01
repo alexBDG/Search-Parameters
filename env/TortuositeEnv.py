@@ -89,6 +89,9 @@ class TortuositeEnv(object):
             reward = self.r2_coef/Config.MAX_STEPS
         elif Config.REWARD_TYPE=="mse":
             reward = 1./(1. + self.mse)/Config.MAX_STEPS
+        if done and self.current_step < Config.MAX_STEPS:
+            # Si done==True après Config.MAX_STEPS/2 étapes, alors reward=5
+            reward = 10*(Config.MAX_STEPS-self.current_step+1)/Config.MAX_STEPS
 
         obs = self._next_observation()
         

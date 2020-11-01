@@ -10,6 +10,7 @@ import os
 import datetime
 import pandas as pd
 import numpy as np
+from shutil import copyfile
 import matplotlib.pyplot as plt
 
 from configs.environment import Config
@@ -114,10 +115,17 @@ class Summary:
         # On crée le dossier de résultats du nom de la date
         date = datetime.datetime.today()
         self.path_name = date.isoformat().replace(":","-").split(".")[0]
-        os.mkdir('results/{0}'.format(self.path_name))
-        os.mkdir('results/{0}/fig'.format(self.path_name))
+        os.mkdir(os.path.join('results', self.path_name))
+        os.mkdir(os.path.join(os.path.join('results', self.path_name), 'fig'))
         
         self.file_name = 'results/{0}/params.csv'.format(self.path_name)
+        
+        # On copie les fichiers configs/environment.py et configs/dqn.py
+        if not os.path.isdir(os.path.join('results', 'configs')):
+            os.mkdir(os.path.join('results', 'configs'))
+            for _file in ['dqn.py', 'environment.py']:
+                copyfile(os.path.join('configs', _file),
+                         os.path.join(os.path.join('results', 'configs'), _file))
         
         
     def create(self):
